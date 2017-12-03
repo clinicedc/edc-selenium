@@ -22,6 +22,7 @@ setup(
     long_description=README,
     zip_safe=False,
     keywords='django edc selenium',
+    install_requires=['selenium'],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
