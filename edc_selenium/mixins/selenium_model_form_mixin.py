@@ -4,7 +4,8 @@ from django.apps import apps as django_apps
 from django.core.management.color import color_style
 from model_mommy import mommy
 from selenium.common.exceptions import NoSuchElementException
-
+from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import InvalidElementStateException
 style = color_style()
 
 SYSTEM_COLUMNS = [
@@ -45,10 +46,18 @@ class SeleniumModelFormMixin:
             element = None
             value = values.get(field.name) or getattr(obj, field.name)
             if verbose:
-                sys.stdout.write(f'{field.name}={value}\n')
+                sys.stdout.write(
+                    f'{field.name}={value}, {field.__class__.__name__}\n')
             if value:
                 try:
-                    if not field.name.endswith('_datetime'):
+                    if field.name.endswith('_datetime'):
+                        pass
+                    elif field.__class__.__name__ in ['ForeignKey', 'OneToOneField']:
+                        select = Select(
+                            self.selenium.find_element_by_name(field.name))
+                        select.select_by_value(str(value.id))
+                        continue
+                    else:
                         element = self.selenium.find_element_by_xpath(
                             f"//input[@name='{field.name}']")
                 except NoSuchElementException as e:
@@ -68,6 +77,7 @@ class SeleniumModelFormMixin:
                         element.clear()
                         element.send_keys(value.strftime('%H:%M'))
                     elif element.get_attribute('class') == 'vDateField':
+                        element.clear()
                         element.send_keys(value.strftime('%Y-%m-%d'))
                     elif element.get_attribute('class') == 'radiolist':
                         for index in range(0, len(field.choices)):
@@ -82,6 +92,10 @@ class SeleniumModelFormMixin:
                                     element.click()
                                     break
                     else:
+                        try:
+                            element.clear()
+                        except InvalidElementStateException:
+                            pass
                         element.send_keys(value)
         if save:
             element = self.selenium.find_element_by_xpath(
