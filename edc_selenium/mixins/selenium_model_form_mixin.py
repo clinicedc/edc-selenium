@@ -57,6 +57,9 @@ class SeleniumModelFormMixin:
                             self.selenium.find_element_by_name(field.name))
                         select.select_by_value(str(value.id))
                         continue
+                    elif field.__class__.__name__ in ['TextField']:
+                        element = self.selenium.find_element_by_xpath(
+                            f"//textarea[@name='{field.name}']")
                     else:
                         element = self.selenium.find_element_by_xpath(
                             f"//input[@name='{field.name}']")
