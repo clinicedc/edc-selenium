@@ -18,5 +18,5 @@ class SeleniumLoginMixin:
         username_input.send_keys('admin')
         password_input = self.selenium.find_element_by_name("password")
         password_input.send_keys('admin')
-        self.selenium.find_element_by_xpath('//input[@value="Submit"]').click()
+        self.selenium.find_element_by_xpath('//input[@value="Login"]').click()
         self.selenium.implicitly_wait(3)

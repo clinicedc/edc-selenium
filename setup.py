@@ -16,7 +16,7 @@ setup(
     author_email='ew2789@gmail.com',
     packages=find_packages(),
     include_package_data=True,
-    url='https://github.com/botswana-harvard/edc-selenium',
+    url='https://github.com/clinicedc/edc-selenium',
     license='GPL license, see LICENSE',
     description='TestCaseMixins for selenium tests on the Edc',
     long_description=README,
