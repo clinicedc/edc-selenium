@@ -111,8 +111,9 @@ class SeleniumModelFormMixin:
         """Returns all field classes that might be on the form.
 
         Use exclude to avoid unnecessarily attempting to find an element
-        known not to eb on the form for this case.
+        known not to be on the form for this case.
         """
+        exclude = exclude or []
         model_cls = django_apps.get_model(model)
         fields = [
             f for f in model_cls._meta.fields
