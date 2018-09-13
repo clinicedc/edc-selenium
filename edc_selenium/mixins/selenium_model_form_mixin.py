@@ -6,6 +6,10 @@ from model_mommy import mommy
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import InvalidElementStateException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 style = color_style()
 
 SYSTEM_COLUMNS = [
@@ -105,7 +109,10 @@ class SeleniumModelFormMixin:
                 f"//input[@value='{save_value}']")
             element.click()
         model_cls = django_apps.get_model(model)
-        return model_cls.objects.all().order_by('modified').last()
+        qs = model_cls.objects.all().order_by('modified').last()
+        WebDriverWait(self.selenium, 10).until(
+            EC.presence_of_element_located((By.ID, 'edc-body')))
+        return qs
 
     def fields(self, model=None, exclude=None):
         """Returns all field classes that might be on the form.

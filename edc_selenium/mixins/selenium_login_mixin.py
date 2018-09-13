@@ -6,10 +6,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from .selenium_utils_mixin import SeleniumUtilsMixin
+
 style = color_style()
 
 
-class SeleniumLoginMixin:
+class SeleniumLoginMixin(SeleniumUtilsMixin):
 
     def get_or_create_user(self, group_names=None, is_superuser=None, site_names=None):
         if group_names is None and is_superuser is None:
@@ -60,8 +62,7 @@ class SeleniumLoginMixin:
             EC.presence_of_element_located((By.ID, element_id)))
         self.selenium.find_element_by_id(element_id).click()
         element_name = f'username'
-        WebDriverWait(self.selenium, 10).until(
-            EC.presence_of_element_located((By.NAME, element_name)))
+        self.wait_for(element_name, by=By.NAME)
 
     def login(self, group_names=None, is_superuser=None, site_names=None):
         """Edc login with custom template.
@@ -77,4 +78,4 @@ class SeleniumLoginMixin:
         password_input = self.selenium.find_element_by_name("password")
         password_input.send_keys('password')
         self.selenium.find_element_by_xpath('//input[@value="Login"]').click()
-        self.selenium.implicitly_wait(2)
+        self.wait_for_edc()
