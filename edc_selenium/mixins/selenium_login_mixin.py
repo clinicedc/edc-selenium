@@ -58,7 +58,7 @@ class SeleniumLoginMixin(SeleniumUtilsMixin):
 
     def logout(self):
         element_id = f'logout'
-        WebDriverWait(self.selenium, 10).until(
+        WebDriverWait(self.selenium, 20).until(
             EC.presence_of_element_located((By.ID, element_id)))
         self.selenium.find_element_by_id(element_id).click()
         element_name = f'username'
