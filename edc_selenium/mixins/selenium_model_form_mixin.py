@@ -103,14 +103,14 @@ class SeleniumModelFormMixin:
                             element.clear()
                         except InvalidElementStateException:
                             pass
-                        element.send_keys(value)
+                        element.send_keys(str(value))
         if save:
             element = self.selenium.find_element_by_xpath(
                 f"//input[@value='{save_value}']")
             element.click()
         model_cls = django_apps.get_model(model)
         qs = model_cls.objects.all().order_by('modified').last()
-        WebDriverWait(self.selenium, 10).until(
+        WebDriverWait(self.selenium, 20).until(
             EC.presence_of_element_located((By.ID, 'edc-body')))
         return qs
 
